@@ -26,6 +26,7 @@ def load_models():
     return cuisine_model, vectorizer, label_encoder, rating_model, df_reco, cosine_matrix
 
 cuisine_model, vectorizer, label_encoder, rating_model, df_reco, cosine_matrix = load_models()
+tfidf_matrix = joblib.load("models/tfidf_matrix.pkl")
 
 # Tabs
 tabs = st.tabs([
@@ -94,25 +95,34 @@ with tabs[2]:
     st.header("Restaurant Recommendation System")
     st.write("Get top 5 similar restaurants.")
 
-    selected_restaurant = st.text_input("Enter a Restaurant Name")
+    selected_restaurant = st.selectbox("Select a Restaurant", df_reco['Restaurant Name'].unique())
     
-    def get_recommendations(name, df, cosine_sim):
-        if name not in df['Restaurant Name'].values:
-            return ["Restaurant not found."]
-        idx = df[df['Restaurant Name'] == name].index[0]
-        sim_scores = list(enumerate(cosine_sim[idx]))
-        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:6]
-        restaurant_indices = [i[0] for i in sim_scores]
-        return df['Restaurant Name'].iloc[restaurant_indices].tolist()
+    def get_recommendations_from_input(user_input, df_data, tfidf_vectorizer, tfidf_matrix, num_results=5):
+    # Clean and vectorize user input
+        from re import sub
+        cleaned_input = sub(r'[^a-zA-Z0-9\s]', '', user_input.lower())
+        user_vec = tfidf_vectorizer.transform([cleaned_input])
+        
+        # Compute cosine similarity with entire dataset
+        similarity_scores = cosine_similarity(user_vec, tfidf_matrix).flatten()
+        
+        # Get top matches
+        top_indices = similarity_scores.argsort()[-num_results:][::-1]
+        recommendations = df_data.iloc[top_indices].copy()
+        recommendations["Similarity Score"] = similarity_scores[top_indices]
+        
+        return recommendations[['Restaurant Name', 'Cuisines', 'City', 'Aggregate rating', 'Votes', 'Similarity Score']]
     
+    user_input = st.text_input("Describe what you're looking for (e.g. 'cheap italian in delhi')")
+
     if st.button("Recommend"):
-        recommendations = get_recommendations(selected_restaurant, df_reco, cosine_matrix)
-        if "not found" in recommendations[0].lower():
-            st.warning("Restaurant not found in database.")
+        if user_input:
+            results = get_recommendations_from_input(user_input, df_reco, vectorizer, cosine_matrix, tfidf_matrix, num_results=5)
+            st.write("**Top Recommendations:**")
+            for i, row in results.iterrows():
+                st.markdown(f"- **{row['Restaurant Name']}** ({row['City']}) — *{row['Cuisines']}*, Rating: {row['Aggregate rating']}")
         else:
-            st.write("**Top 5 Similar Restaurants:**")
-            for r in recommendations:
-                st.markdown(f"- {r}")
+            st.warning("Please enter a restaurant name or preference.")
 
 # ---------------- TAB 4 ----------------
 with tabs[3]:
