@@ -119,7 +119,7 @@ with tabs[3]:
     st.header("Interactive Restaurant Map")
     st.write("Explore restaurant locations on an interactive map.")
 
-    map_path = map_path = r"C:/Users/Administrator/Downloads/Tasks/Restaurant_Distribution_Clustered_Full.html"
+    map_path = os.path.join("maps", "Restaurant_Distribution_Clustered_Full.html")
 
 
     if os.path.exists(map_path):
@@ -127,4 +127,5 @@ with tabs[3]:
             map_html = f.read()
             st.components.v1.html(map_html, height=600, scrolling=True)
     else:
+
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
