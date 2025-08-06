@@ -97,7 +97,7 @@ with tabs[2]:
 
     selected_restaurant = st.selectbox("Select a Restaurant", df_reco['Restaurant Name'].unique())
     
-    def get_recommendations_from_input(user_input, df_data, tfidf_vectorizer, tfidf_matrix, num_results=5):
+    def get_recommendations_from_input(user_input, df_data, tfidf_vectorizer, cosine_matrix, tfidf_matrix, num_results=5):
     # Clean and vectorize user input
         from re import sub
         cleaned_input = sub(r'[^a-zA-Z0-9\s]', '', user_input.lower())
@@ -137,4 +137,5 @@ with tabs[3]:
             map_html = f.read()
             st.components.v1.html(map_html, height=600, scrolling=True)
     else:
+
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
