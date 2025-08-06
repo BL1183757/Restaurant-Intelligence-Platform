@@ -135,9 +135,19 @@ with tabs[3]:
     if os.path.exists(map_path):
         with open(map_path, "r", encoding="utf-8") as f:
             map_html = f.read()
-            st.components.v1.html(map_html, height=600, width=1400, scrolling=True)
+            st.components.v1.html(
+                f"""
+                <div style="width: 100vw; height: 80vh; margin: 0; padding: 0;">
+                    {map_html}
+                </div>
+                """,
+                height=700,
+                scrolling=True
+            )
     else:
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
+
+
 
 
 
