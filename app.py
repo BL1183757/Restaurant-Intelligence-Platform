@@ -122,15 +122,15 @@ with tabs[3]:
     map_path = os.path.join("maps", "Restaurant_Distribution_Clustered_Full.html")
 
 
+    map_path = os.path.join("maps", "Restaurant_Distribution_Clustered_Full.html")
+
     if os.path.exists(map_path):
         with open(map_path, "r", encoding="utf-8") as f:
             map_html = f.read()
-            st.components.v1.html(f"""
-                <div style="width: 100%; height: 600px;">
-                    {map_html}
-                </div>
-            """, height=600, scrolling=True)
+            st.components.v1.html(map_html, height=700, width=1400, scrolling=True)
     else:
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
+
+
 
 
