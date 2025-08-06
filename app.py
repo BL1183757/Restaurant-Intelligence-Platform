@@ -96,14 +96,30 @@ with tabs[2]:
 
     selected_restaurant = st.text_input("Enter a Restaurant Name")
     
-    def get_recommendations(name, df, cosine_sim):
+    '''def get_recommendations(name, df, cosine_sim):
         if name not in df['Restaurant Name'].values:
             return ["Restaurant not found."]
         idx = df[df['Restaurant Name'] == name].index[0]
         sim_scores = list(enumerate(cosine_sim[idx]))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:6]
         restaurant_indices = [i[0] for i in sim_scores]
-        return df['Restaurant Name'].iloc[restaurant_indices].tolist()
+        return df['Restaurant Name'].iloc[restaurant_indices].tolist()'''
+
+    def get_recommendations_from_input(user_input, df_data, tfidf_vectorizer, tfidf_matrix, num_results=5):
+    # Clean and vectorize user input
+        from re import sub
+        cleaned_input = sub(r'[^a-zA-Z0-9\s]', '', user_input.lower())
+        user_vec = tfidf_vectorizer.transform([cleaned_input])
+        
+        # Compute cosine similarity with entire dataset
+        similarity_scores = cosine_similarity(user_vec, tfidf_matrix).flatten()
+        
+        # Get top matches
+        top_indices = similarity_scores.argsort()[-num_results:][::-1]
+        recommendations = df_data.iloc[top_indices].copy()
+        recommendations["Similarity Score"] = similarity_scores[top_indices]
+        
+        return recommendations[['Restaurant Name', 'Cuisines', 'City', 'Aggregate rating', 'Votes', 'Similarity Score']]
     
     if st.button("Recommend"):
         recommendations = get_recommendations(selected_restaurant, df_reco, cosine_matrix)
@@ -130,6 +146,7 @@ with tabs[3]:
             st.components.v1.html(map_html, height=700, width=1400, scrolling=True)
     else:
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
+
 
 
 
