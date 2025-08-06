@@ -93,16 +93,21 @@ with tabs[2]:
     st.header("Restaurant Recommendation System")
     st.write("Get top 5 similar restaurants.")
 
-    selected_restaurant = st.text_input("Enter a Restaurant Name")
+    selected_restaurant = st.selectbox("Select a Restaurant", df_reco['Restaurant Name'].unique())
     
     def get_recommendations(name, df, cosine_sim):
-        if name not in df['Restaurant Name'].values:
+        df['Restaurant Name_lower'] = df['Restaurant Name'].str.lower()
+        name = name.lower()
+    
+        if name not in df['Restaurant Name_lower'].values:
             return ["Restaurant not found."]
-        idx = df[df['Restaurant Name'] == name].index[0]
+        
+        idx = df[df['Restaurant Name_lower'] == name].index[0]
         sim_scores = list(enumerate(cosine_sim[idx]))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:6]
         restaurant_indices = [i[0] for i in sim_scores]
         return df['Restaurant Name'].iloc[restaurant_indices].tolist()
+
     
     if st.button("Recommend"):
         recommendations = get_recommendations(selected_restaurant, df_reco,cosine_matrix)
@@ -127,6 +132,7 @@ with tabs[3]:
             st.components.v1.html(map_html, height=600, scrolling=True)
     else:
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
+
 
 
 
