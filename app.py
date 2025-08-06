@@ -94,8 +94,6 @@ with tabs[2]:
     st.header("Restaurant Recommendation System")
     st.write("Get top 5 similar restaurants.")
 
-    selected_restaurant = st.text_input("Enter a Restaurant Name")
-
     selected_restaurant = st.selectbox("Select a Restaurant", df_reco['Restaurant Name'].unique())
 
     
@@ -144,6 +142,7 @@ with tabs[3]:
             st.components.v1.html(map_html, height=700, width=1400, scrolling=True)
     else:
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
+
 
 
 
