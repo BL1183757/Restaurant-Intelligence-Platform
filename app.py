@@ -96,17 +96,25 @@ with tabs[2]:
     selected_restaurant = st.selectbox("Select a Restaurant", df_reco['Restaurant Name'].unique())
     
     def get_recommendations(name, df, cosine_sim):
-        df['Restaurant Name_lower'] = df['Restaurant Name'].str.lower()
         name = name.lower()
+        df = df.copy()
+        df['Restaurant Name_lower'] = df['Restaurant Name'].str.lower()
     
         if name not in df['Restaurant Name_lower'].values:
             return ["Restaurant not found."]
         
         idx = df[df['Restaurant Name_lower'] == name].index[0]
+    
+        # Ensure idx is valid for cosine_sim
+        if idx >= cosine_sim.shape[0]:
+            return ["Index out of range in cosine similarity matrix."]
+        
         sim_scores = list(enumerate(cosine_sim[idx]))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:6]
         restaurant_indices = [i[0] for i in sim_scores]
+    
         return df['Restaurant Name'].iloc[restaurant_indices].tolist()
+
 
     
     if st.button("Recommend"):
@@ -132,6 +140,7 @@ with tabs[3]:
             st.components.v1.html(map_html, height=600, scrolling=True)
     else:
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
+
 
 
 
