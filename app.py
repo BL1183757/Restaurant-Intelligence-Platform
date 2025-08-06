@@ -18,13 +18,14 @@ def load_models():
     
     rating_model = joblib.load("models/rating_model.pkl")
 
-    cosine_matrix=joblib.load("models/cosine_matrix.pkl")
-    
     df_reco = joblib.load("models/dataframe.pkl")
     
-    return cuisine_model, vectorizer, label_encoder, rating_model, cosine_matrix, df_reco
+    # Load cosine matrix
+    cosine_matrix = joblib.load("models/cosine_matrix.pkl")
+    
+    return cuisine_model, vectorizer, label_encoder, rating_model, df_reco, cosine_matrix
 
-cuisine_model, vectorizer, label_encoder, rating_model, cosine_matrix, df_reco = load_models()
+cuisine_model, vectorizer, label_encoder, rating_model, df_reco, cosine_matrix = load_models()
 
 # Tabs
 tabs = st.tabs([
@@ -105,7 +106,7 @@ with tabs[2]:
         return df['Restaurant Name'].iloc[restaurant_indices].tolist()
     
     if st.button("Recommend"):
-        recommendations = get_recommendations(selected_restaurant, df_reco,cosine_matrix)
+        recommendations = get_recommendations(selected_restaurant, df_reco, cosine_matrix)
         if "not found" in recommendations[0].lower():
             st.warning("Restaurant not found in database.")
         else:
@@ -127,8 +128,3 @@ with tabs[3]:
             st.components.v1.html(map_html, height=600, scrolling=True)
     else:
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
-
-
-
-
-
