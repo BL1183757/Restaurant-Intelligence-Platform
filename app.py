@@ -26,6 +26,7 @@ def load_models():
     return cuisine_model, vectorizer, label_encoder, rating_model, df_reco, cosine_matrix
 
 cuisine_model, vectorizer, label_encoder, rating_model, df_reco, cosine_matrix = load_models()
+tfidf_matrix = joblib.load("models/tfidf_matrix.pkl")
 
 # Tabs
 tabs = st.tabs([
@@ -118,7 +119,7 @@ with tabs[2]:
 
     if st.button("Recommend"):
         if user_input:
-            results = get_recommendations_from_input(user_input, df_reco, vectorizer, cosine_matrix, num_results=5)
+            results = get_recommendations_from_input(user_input, df_reco, vectorizer, cosine_matrix, tfidf_matrix, num_results=5)
             st.write("**Top Recommendations:**")
             for i, row in results.iterrows():
                 st.markdown(f"- **{row['Restaurant Name']}** ({row['City']}) — *{row['Cuisines']}*, Rating: {row['Aggregate rating']}")
@@ -142,6 +143,7 @@ with tabs[3]:
             st.components.v1.html(map_html, height=700, width=1400, scrolling=True)
     else:
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
+
 
 
 
