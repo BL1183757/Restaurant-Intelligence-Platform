@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import os
+import html
 from sklearn.metrics.pairwise import cosine_similarity
 
 st.set_page_config(page_title="Restaurant Intelligence App", layout="wide")
@@ -132,20 +133,22 @@ with tabs[3]:
     map_path = os.path.join("maps", "Restaurant_Distribution_Clustered_Full.html")
 
 
+
     if os.path.exists(map_path):
         with open(map_path, "r", encoding="utf-8") as f:
-            map_html = f.read()
+            raw_html = f.read()
+            safe_html = html.escape(raw_html)  # escape quotes & special chars
+    
             st.components.v1.html(
-                f"""
-                <div style="width: 100vw; height: 80vh; margin: 0; padding: 0;">
-                    {map_html}
-                </div>
-                """,
-                height=700,
-                scrolling=True
+                f'<iframe srcdoc="{safe_html}" width="100%" height="600" style="border:none;"></iframe>',
+                height=620,
+                scrolling=False
             )
     else:
         st.warning("Map file not found. Please ensure the HTML file is in the correct folder.")
+
+
+
 
 
 
