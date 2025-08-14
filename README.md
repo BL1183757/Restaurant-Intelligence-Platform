@@ -65,16 +65,17 @@ This app is deployed using **Streamlit Community Cloud**.
 ### Steps to Run Locally
 
 1. **Clone the repository**:
-   ```bash
+   ```
    git clone https://github.com/BL1183757/Restaurant-Intelligence-Platform.git
    cd Restaurant-Intelligence-Platform
 
-   Install dependencies:
 
 2. Install Dependencies
+   ```
    pip install -r requirements.txt
 
-3. Run the app
+4. Run the app
+   ```
    streamlit run app.py
 
 <img width="1789" height="833" alt="image" src="https://github.com/user-attachments/assets/398342d4-099c-406b-9ad9-465b631f64cb" />
