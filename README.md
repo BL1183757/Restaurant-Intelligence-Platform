@@ -66,7 +66,7 @@ This app is deployed using **Streamlit Community Cloud**.
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/Restaurant-Intelligence-Platform.git
+   git clone https://github.com/BL1183757/Restaurant-Intelligence-Platform.git
    cd Restaurant-Intelligence-Platform
 
    Install dependencies:
